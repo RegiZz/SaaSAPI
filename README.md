@@ -1,4 +1,4 @@
-# SaaS API
+## SaaS API
 
 Prosty backend do zarządzania planami subskrypcji, użytkownikami, trialami i limitami (users/projects).
 Projekt jest oparty o Spring Boot i PostgreSQL.
@@ -273,3 +273,5 @@ VITE_API_PASS=<HASŁO_Z_LOGÓW_SPRING_BOOT>
 ```bash
 ./mvnw test
 ```
+
+(README AI generated)
