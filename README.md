@@ -260,7 +260,7 @@ VITE_API_PASS=<HASŁO_Z_LOGÓW_SPRING_BOOT>
 - Downgrade planu (tańszy) jest planowany na kolejny okres rozliczeniowy.
 - Cron uruchamiany codziennie o **01:00** przetwarza triale i zaplanowane zmiany planów.
 
-## Struktura projektu (wysoki poziom)
+## Struktura projektu
 
 - `api/` – kontrolery, DTO, mapery
 - `domain/` – model domenowy + serwis z logiką biznesową
