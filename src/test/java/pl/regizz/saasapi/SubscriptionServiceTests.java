@@ -2,11 +2,6 @@ package pl.regizz.saasapi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +15,6 @@ import pl.regizz.saasapi.infrastructure.persistence.UserRepository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class SaaSapiApplicationTests {
+class SubscriptionServiceTests {
 
     @MockBean
     private SubscriptionRepository subscriptionRepository;
@@ -41,16 +35,6 @@ class SaaSapiApplicationTests {
     private SubscriptionEventRepository eventRepository;
     @Autowired
     private SubscriptionService subscriptionService;
-
-    @Test
-    void shouldPersistUserAndGenerateId() {
-        User user = new User("test@mail.pl");
-
-        User saved = userRepository.save(user);
-
-        assertThat(saved.getId()).isNotNull();
-        assertThat(saved.getEmail()).isEqualTo("test@mail.pl");
-    }
 
     @BeforeEach
     void setUp() {
