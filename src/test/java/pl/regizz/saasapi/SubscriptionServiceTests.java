@@ -44,7 +44,7 @@ class SubscriptionServiceTests {
     @Test
     void startTrial_savesSubscriptionAndEvent() {
         User user = new User("user@example.com");
-        Plan plan = new Plan("BASIC", BigDecimal.valueOf(29), BillingPeriod.MONTHLY, 10, 20);
+        Plan plan = new Plan("BASIC", BigDecimal.valueOf(29), BillingPeriod.MONTHLY, java.util.Map.of("maxUsers", 10, "maxProjects", 20));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(planRepository.findById(2L)).thenReturn(Optional.of(plan));

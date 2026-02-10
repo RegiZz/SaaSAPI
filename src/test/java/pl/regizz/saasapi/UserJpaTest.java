@@ -16,11 +16,12 @@ class UserJpaTest {
 
     @Test
     void shouldPersistUserAndGenerateId() {
-        User user = new User("test@mail.pl");
+        String email = "test-" + java.util.UUID.randomUUID() + "@mail.pl";
+        User user = new User(email);
 
         User saved = userRepository.save(user);
 
         assertThat(saved.getId()).isNotNull();
-        assertThat(saved.getEmail()).isEqualTo("test@mail.pl");
+        assertThat(saved.getEmail()).isEqualTo(email);
     }
 }

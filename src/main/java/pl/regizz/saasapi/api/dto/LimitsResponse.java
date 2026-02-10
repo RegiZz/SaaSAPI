@@ -1,7 +1,8 @@
 package pl.regizz.saasapi.api.dto;
 
+import java.util.Map;
+
 public record LimitsResponse(
-        Integer maxUsers,
-        Integer maxProjects
+        Map<String, Integer> limits
 ) {
 }

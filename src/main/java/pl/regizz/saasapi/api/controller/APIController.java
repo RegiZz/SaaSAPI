@@ -15,6 +15,7 @@ import pl.regizz.saasapi.infrastructure.persistence.PlanRepository;
 import pl.regizz.saasapi.infrastructure.persistence.UserRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -45,15 +46,13 @@ public class APIController {
                         request.code(),
                         request.price(),
                         BillingPeriod.valueOf(request.billingPeriod()),
-                        request.maxUsers(),
-                        request.maxProjects()
+                        request.limits()
                 ));
         if (plan.getId() != null) {
             plan.updatePlan(
                     request.price(),
                     BillingPeriod.valueOf(request.billingPeriod()),
-                    request.maxUsers(),
-                    request.maxProjects(),
+                    request.limits(),
                     plan.isActive()
             );
         }
@@ -77,8 +76,7 @@ public class APIController {
         plan.updatePlan(
                 request.price(),
                 BillingPeriod.valueOf(request.billingPeriod()),
-                request.maxUsers(),
-                request.maxProjects(),
+                request.limits(),
                 request.active()
         );
         Plan saved = planRepository.save(plan);
@@ -133,15 +131,21 @@ public class APIController {
     public ResponseEntity<LimitsResponse> getLimits(@PathVariable Long userId) {
         Subscription subscription = subscriptionService.getCurrentSubscription(userId);
         Plan plan = subscription.getPlan();
-        return ResponseEntity.ok(new LimitsResponse(plan.getMaxUsers(), plan.getMaxProjects()));
+        return ResponseEntity.ok(new LimitsResponse(plan.getLimits()));
     }
 
     @PostMapping("/limits/check")
     public ResponseEntity<LimitsCheckResponse> checkLimits(@Valid @RequestBody LimitsCheckRequest request) {
         Subscription subscription = subscriptionService.getCurrentSubscription(request.userId());
         Plan plan = subscription.getPlan();
-        boolean allowed = request.requestedUsers() <= plan.getMaxUsers()
-                && request.requestedProjects() <= plan.getMaxProjects();
+        Map<String, Integer> planLimits = plan.getLimits();
+        
+        boolean allowed = request.requestedLimits().entrySet().stream()
+                .allMatch(entry -> {
+                    Integer limitValue = planLimits.getOrDefault(entry.getKey(), 0);
+                    return entry.getValue() <= limitValue;
+                });
+                
         return ResponseEntity.ok(new LimitsCheckResponse(allowed));
     }
 }

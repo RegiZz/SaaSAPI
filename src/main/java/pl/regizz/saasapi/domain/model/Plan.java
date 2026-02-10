@@ -3,6 +3,8 @@ package pl.regizz.saasapi.domain.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "plans")
@@ -20,20 +22,21 @@ public class Plan {
     @Enumerated(EnumType.STRING)
     private BillingPeriod billingPeriod;
 
-    private Integer maxUsers;
-
-    private Integer maxProjects;
+    @ElementCollection
+    @CollectionTable(name = "plan_limits", joinColumns = @JoinColumn(name = "plan_id"))
+    @MapKeyColumn(name = "limit_name")
+    @Column(name = "limit_value")
+    private Map<String, Integer> limits = new HashMap<>();
 
     private boolean active = true;
 
     protected Plan() {}
 
-    public Plan(String code, BigDecimal price, BillingPeriod billingPeriod, Integer maxUsers, Integer maxProjects) {
+    public Plan(String code, BigDecimal price, BillingPeriod billingPeriod, Map<String, Integer> limits) {
         this.code = code;
         this.price = price;
         this.billingPeriod = billingPeriod;
-        this.maxUsers = maxUsers;
-        this.maxProjects = maxProjects;
+        this.limits = limits != null ? limits : new HashMap<>();
     }
 
     public Long getId() {
@@ -52,23 +55,18 @@ public class Plan {
         return billingPeriod;
     }
 
-    public Integer getMaxUsers() {
-        return maxUsers;
-    }
-
-    public Integer getMaxProjects() {
-        return maxProjects;
+    public Map<String, Integer> getLimits() {
+        return limits;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void updatePlan(BigDecimal price, BillingPeriod billingPeriod, Integer maxUsers, Integer maxProjects, boolean active) {
+    public void updatePlan(BigDecimal price, BillingPeriod billingPeriod, Map<String, Integer> limits, boolean active) {
         this.price = price;
         this.billingPeriod = billingPeriod;
-        this.maxUsers = maxUsers;
-        this.maxProjects = maxProjects;
+        this.limits = limits != null ? limits : new HashMap<>();
         this.active = active;
     }
 }
