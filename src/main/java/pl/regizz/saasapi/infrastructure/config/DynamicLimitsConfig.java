@@ -34,7 +34,6 @@ public class DynamicLimitsConfig {
                 return data.limits();
             }
         } catch (IOException e) {
-            // Log error in real app
             System.err.println("Could not load config.json: " + e.getMessage());
         }
         return Collections.emptyList();

@@ -43,6 +43,36 @@ Domyślna konfiguracja aplikacji (`src/main/resources/application.properties`):
 - `spring.jpa.hibernate.ddl-auto=validate`
 - `spring.flyway.enabled=true`
 
+### Uwierzytelnianie i role (HTTP Basic)
+
+API jest zabezpieczone przez Spring Security (HTTP Basic) i działa w trybie stateless.
+Użytkownicy są konfigurowani z poziomu właściwości `app.security.users[...]`
+lub przez zmienne środowiskowe:
+
+- `SAAS_API_ADMIN_USER` / `SAAS_API_ADMIN_PASSWORD`
+- `SAAS_API_USER` / `SAAS_API_USER_PASSWORD`
+
+Hasła są automatycznie hashowane przy starcie (bcrypt). Jeśli podasz hasło
+z prefiksem np. `{bcrypt}`, nie zostanie ponownie zahashowane.
+
+**Dostęp do Swagger UI wymaga roli ADMIN.**
+
+### Plik `config.json` (dynamiczne limity)
+
+`config.json` określa listę nazw limitów, które mogą pojawiać się w planach i w walidacji limitów
+(np. `maxUsers`, `maxProjects`, itd.). Plik jest ładowany w tej kolejności:
+
+1. `config.json` z katalogu roboczego (root projektu podczas uruchomienia),
+2. jeśli nie istnieje – `config.json` z classpath (`src/main/resources`).
+
+Przykład:
+
+```json
+{
+  "limits": ["maxUsers", "maxFilms", "maxTokens"]
+}
+```
+
 ### Szybki start z Dockerem (PostgreSQL)
 
 ```bash
@@ -64,7 +94,7 @@ Po starcie:
 - API: `http://localhost:8080/api/...`
 - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
 
-> Uwaga: ponieważ w projekcie jest dodany starter Spring Security i brak własnej konfiguracji security, endpointy będą domyślnie chronione HTTP Basic. Login to zwykle `user`, a hasło jest generowane przy starcie i wypisywane w logach.
+> Uwaga: endpointy są chronione HTTP Basic, a użytkownicy/role pochodzą z konfiguracji `app.security.users[...]`.
 
 ---
 
@@ -247,7 +277,7 @@ export default function SubscriptionPanel() {
 ```env
 VITE_API_URL=http://localhost:8080
 VITE_API_USER=user
-VITE_API_PASS=<HASŁO_Z_LOGÓW_SPRING_BOOT>
+VITE_API_PASS=<HASLO_Z_KONFIGURACJI>
 ```
 
 ## Logika biznesowa (skrót)
